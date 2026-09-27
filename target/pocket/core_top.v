@@ -343,6 +343,9 @@ module core_top (
         32'h210: begin
           square_pixels <= bridge_wr_data[0];
         end
+        32'h214: begin
+          composite_blend_enabled <= bridge_wr_data[0];
+        end
         32'h300: begin
           multitap_enabled <= bridge_wr_data[0];
         end
@@ -672,6 +675,7 @@ module core_top (
   reg hide_overscan = 0;
   reg [1:0] mask_vid_edges = 0;
   reg square_pixels = 0;
+  reg composite_blend_enabled = 0;
   reg allow_extra_sprites = 0;
   reg [2:0] selected_palette = 0;
   wire external_reset = reset_delay > 0;
@@ -879,6 +883,25 @@ module core_top (
   wire video_vs_nes;
   wire [23:0] video_rgb_nes;
 
+  // Filter palette RGB at the Pocket pixel rate, before video-slot metadata.
+  wire composite_blend_video;
+  synch_3 #(.WIDTH(1)) composite_settings_s (
+      .i(composite_blend_enabled),
+      .o(composite_blend_video),
+      .clk(clk_video_5_37),
+      .rise(),
+      .fall()
+  );
+  wire [23:0] video_rgb_composite;
+  composite_blend pocket_composite_blend (
+      .clk(clk_video_5_37),
+      .enable(composite_blend_video),
+      .hblank(h_blank),
+      .vblank(v_blank),
+      .rgb_in(video_rgb_nes),
+      .rgb_out(video_rgb_composite)
+  );
+
   reg video_de_reg;
   reg video_hs_reg;
   reg video_vs_reg;
@@ -907,7 +930,7 @@ module core_top (
     if (de) begin
       video_de_reg  <= 1;
 
-      video_rgb_reg <= video_rgb_nes;
+      video_rgb_reg <= video_rgb_composite;
     end else if (de_prev && ~de) begin
       video_rgb_reg <= video_slot_rgb;
     end

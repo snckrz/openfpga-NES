@@ -1,17 +1,24 @@
 # NES for Analogue Pocket
 
+## Composite Blend
+
+Unofficial build by [snckrz](https://github.com/snckrz), based on [agg23’s NES 1.0.1 core](https://github.com/agg23/openFPGA-NES). Version **1.0.1-composite1** (2026-09-27).
+
+Adds **Composite Blend: Off / Full** in Core Settings; Off is the default. Full averages neighbouring horizontal RGB pixels to blend dithering and soften edges. Adapted from [Kitrinx’s module](https://github.com/opengateware/openFPGA-Genesis/blob/0032b2c6904131f11496396763a3d8b1a4a19445/src/fpga/core/rtl/cofi.sv), as used in [ericlewis’s Genesis Pocket core](https://github.com/ericlewis/openfpga-genesis). This is simple RGB blending; full NTSC simulation and Adaptive mode are not included.
+
+I’ve tried this build on my Pocket and haven’t noticed any obvious problems. Testing is limited; game-by-game, Dock and save/load coverage hasn’t been documented. Save-state support is unchanged. Compilation, reported timing and filter simulation passed; see [build notes and rebuild instructions](docs/COMPOSITE_BUILD.md).
+
 Ported from the core originally developed by [Ludvig Strigeus](https://github.com/strigeus/fpganes) and heavily developed by [@sorgelig](https://github.com/sorgelig), [@greyrogue](https://github.com/greyrogue), [@Kitrinx](https://github.com/Kitrinx), [@paulb-nl](https://github.com/paulb-nl), and many more. Core icon by [spiritualized1997](https://github.com/spiritualized1997). Latest upstream available at https://github.com/MiSTer-devel/NES_MiSTer
 
-Please report any issues encountered to this repo. Most likely any problems are a result of my port, not the original core. Issues will be upstreamed as necessary.
+Please report problems with this build to this fork’s Issues page, including the game, firmware, handheld/Dock mode and filter setting.
 
 ## Installation
 
-### Easy mode
+1. Download `agg23.NES_1.0.1-composite1-2026-09-27.zip` from [Releases](https://github.com/snckrz/openfpga-NES/releases).
+2. Back up `Cores/agg23.NES`, then merge the ZIP’s `Cores`, `Platforms` and `Assets` folders, where present, into your SD root. Preserve custom palettes and your preferred `video.json`.
+3. Launch the core and select **Composite Blend → Full**. Restore your backup to revert.
 
-I highly recommend the updater tools by [@mattpannella](https://github.com/mattpannella) and [@RetroDriven](https://github.com/RetroDriven). If you're running Windows, use [the RetroDriven GUI](https://github.com/RetroDriven/Pocket_Updater), or if you prefer the CLI, use [the mattpannella tool](https://github.com/mattpannella/pocket_core_autoupdate_net). Either of these will allow you to automatically download and install openFPGA cores onto your Analogue Pocket. Go donate to them if you can
-
-### Manual mode
-To install the core, copy the `Assets`, `Cores`, and `Platform` folders over to the root of your SD card. Please note that Finder on macOS automatically _replaces_ folders, rather than merging them like Windows does, so you have to manually merge the folders.
+This replaces the existing `agg23.NES` core. Updaters may overwrite it. Matching source, build reports and checksums are included in the release.
 
 ## Usage
 
@@ -83,3 +90,7 @@ There are several options provided for tweaking the displayed video:
 Core supports virtual lightguns by enabling the "Use Zapper" setting. The crosshair can be controlled with the D-Pad or left joystick, using the A button to fire. D-Pad aim sensitivity can be adjusted with the "D-Pad Aim Speed" setting.
 
 **NOTE:** Joystick support for aiming only appears to work when a controller is paired over Bluetooth and not connected to the Analogue Dock directly by USB.
+
+## License and packaging credits
+
+The existing [GPLv3 license](LICENSE) and upstream notices are retained. Packaging uses [agg23/pocketpublish](https://github.com/agg23/pocketpublish); its OpenGateware contributors’ MIT notice is preserved in the helper.
